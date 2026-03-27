@@ -43,7 +43,7 @@ async function main() {
   });
 
   teams.on("meetingUpdate", async (update) => {
-    logger.info(`Meeting update: ${JSON.stringify(update, null, 2)}`);
+    logger.debug(`Meeting update: ${JSON.stringify(update, null, 2)}`);
 
     isInMeeting = update.meetingState?.isInMeeting ?? false;
     hasUnread = update.meetingState?.hasUnreadMessages ?? false;
