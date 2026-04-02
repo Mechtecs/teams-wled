@@ -20,15 +20,17 @@ Or double-click `start.bat` from the desktop.
 | `LOG_LEVEL`              | `info`                     | Winston log level               |
 | `TEAMS_WS_URL`           | `ws://localhost:8124`      | Teams WebSocket endpoint        |
 | `WLED_URL`               | `http://192.168.178.160`   | WLED device JSON API base URL   |
-| `WLED_PRESET_IDLE`       | `1`                        | WLED preset when not in a call  |
-| `WLED_PRESET_IN_MEETING` | `2`                        | WLED preset when in a call      |
-| `WLED_PRESET_UNREAD`     | `3`                        | WLED preset for unread messages |
+| `WLED_PRESET_IDLE`       | `1`                        | WLED preset when not in a call       |
+| `WLED_PRESET_IN_MEETING` | `2`                        | WLED preset when in a call (unmuted) |
+| `WLED_PRESET_MUTED`      | `3`                        | WLED preset when in a call and muted |
+| `WLED_PRESET_UNREAD`     | `4`                        | WLED preset for unread messages      |
 
 ## Preset Priority
 
-1. **Unread messages** (highest) — `WLED_PRESET_UNREAD`
-2. **In meeting** — `WLED_PRESET_IN_MEETING`
-3. **Idle** — `WLED_PRESET_IDLE`
+1. **In meeting, muted** (highest) — `WLED_PRESET_MUTED`
+2. **Unread messages** — `WLED_PRESET_UNREAD`
+3. **In meeting, unmuted** — `WLED_PRESET_IN_MEETING`
+4. **Idle** — `WLED_PRESET_IDLE`
 
 On shutdown (Ctrl+C), the WLED device resets to the idle preset.
 

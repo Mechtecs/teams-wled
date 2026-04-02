@@ -1,4 +1,6 @@
-import { logger } from "./logger";
+import { createLogger } from "./logger";
+
+const logger = createLogger("wled");
 
 const WLED_URL = process.env.WLED_URL ?? "http://192.168.178.160";
 

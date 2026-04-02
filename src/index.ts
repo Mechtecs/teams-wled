@@ -1,11 +1,14 @@
 import "dotenv/config";
-import { logger } from "./logger";
+import { createLogger } from "./logger";
+
+const logger = createLogger("index");
 import { TeamsClient } from "./teams";
 import { WledClient } from "./wled";
 
 const WLED_PRESET_IDLE = Number(process.env.WLED_PRESET_IDLE ?? 1);
 const WLED_PRESET_IN_MEETING = Number(process.env.WLED_PRESET_IN_MEETING ?? 2);
-const WLED_PRESET_UNREAD = Number(process.env.WLED_PRESET_UNREAD ?? 3);
+const WLED_PRESET_MUTED = Number(process.env.WLED_PRESET_MUTED ?? 3);
+const WLED_PRESET_UNREAD = Number(process.env.WLED_PRESET_UNREAD ?? 4);
 
 async function main() {
   logger.info("teams-wled starting...");
@@ -15,11 +18,14 @@ async function main() {
 
   let currentPreset: number | null = null;
   let isInMeeting = false;
+  let isMuted = false;
   let hasUnread = false;
 
   async function updatePreset() {
     let target: number;
-    if (hasUnread) {
+    if (isInMeeting && isMuted) {
+      target = WLED_PRESET_MUTED;
+    } else if (hasUnread) {
       target = WLED_PRESET_UNREAD;
     } else if (isInMeeting) {
       target = WLED_PRESET_IN_MEETING;
@@ -30,7 +36,15 @@ async function main() {
     if (target === currentPreset) return;
     currentPreset = target;
 
-    logger.info(`Setting WLED preset ${target}`);
+    if (target === WLED_PRESET_MUTED) {
+      logger.info("In meeting (muted)");
+    } else if (target === WLED_PRESET_UNREAD) {
+      logger.info("Unread messages");
+    } else if (target === WLED_PRESET_IN_MEETING) {
+      logger.info("In meeting");
+    } else {
+      logger.info("Idle");
+    }
     try {
       await wled.setPreset(target);
     } catch (err) {
@@ -46,6 +60,7 @@ async function main() {
     logger.debug(`Meeting update: ${JSON.stringify(update, null, 2)}`);
 
     isInMeeting = update.meetingState?.isInMeeting ?? false;
+    isMuted = update.meetingState?.isMuted ?? false;
     hasUnread = update.meetingState?.hasUnreadMessages ?? false;
 
     await updatePreset();

@@ -2,7 +2,9 @@ import { EventEmitter } from "events";
 import fs from "fs/promises";
 import path from "path";
 import WebSocket from "ws";
-import { logger } from "./logger";
+import { createLogger } from "./logger";
+
+const logger = createLogger("teams");
 import type { MeetingUpdate, TeamsAction, TeamsClientEvents, TeamsMessage } from "./models";
 
 const TEAMS_WS_URL = process.env.TEAMS_WS_URL ?? "ws://localhost:8124";
